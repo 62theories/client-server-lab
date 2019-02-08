@@ -1,9 +1,9 @@
 var net = require('net');
 var HOST = '127.0.0.1';
 var PORT = 6969;
-var count = 0
+var that = ""
 var client = new net.Socket();
-var stop = 0
+
 
 
 client.connect(PORT, HOST, function() {
@@ -13,25 +13,7 @@ client.connect(PORT, HOST, function() {
 
 client.on('data', function(data) {
    console.log('server said: ' + data);
-
-	let stdin = process.openStdin()
-   if(data == 'OK' || data == 'WRONG')
-   {
-   	stdin.addListener("data", (value) =>{
-	input = value.toString().trim()
-	client.write(input);
-	
-	})	
-   }
-   else if(data == 'BINGO')
-   {
-   	
-   }
-
-   
-   
-  
-
+   that = data
 
    
 });
@@ -41,3 +23,18 @@ client.on('close', function() {
    console.log('Connection closed');
    client.destroy();
 });
+
+
+let stdin = process.openStdin()
+  
+      stdin.addListener("data", (value) =>{
+      input = value.toString().trim()
+     if(that == 'OK' || that == 'WRONG')
+     {
+      client.write(input)
+     }
+     else if(that == 'BINGO')
+     {
+      client.destroy()
+     }
+   })
